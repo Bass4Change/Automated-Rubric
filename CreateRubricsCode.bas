@@ -1,88 +1,25 @@
 Attribute VB_Name = "CreateRubricsCode"
 Public DidSelect As Boolean
 
+Public iRow As Long
+Public counter As Long
+
+Public CellName As String
+
+Public NewBook As Workbook
+
+Public ClassRoster As Worksheet
+Public StartHere As Worksheet
+
+Public ClassPeriods As New Collection
+Public TheBooks As New Collection
+
 Sub CreateRubrics()
 Attribute CreateRubrics.VB_ProcData.VB_Invoke_Func = " \n14"
-'
-'
-'
 
-'
-
-'Save As Variables
-
-'Adding a couple of comments to test this whole github thing.
-'Ladee da dee da
-'More meaningless comments
-'So, so, harmless
-
-Dim EndAll As Worksheet
-Dim AllBook As Workbook
-Dim DifBook As Workbook
-Dim SaveAll As Workbook
-Dim OldBook As Workbook
-Dim SaveName As Variant
-Dim NewSaveName As Variant
-Dim lngSaveName As Long
-Dim shts As Long
-
-Dim fld As Dialogs
-Dim sPath As Variant
-Dim beauty As Integer
-Dim Burrito As Boolean
 Dim Silly As Boolean
 
-Dim period As Range
-Dim NewPeriod As Range
-Dim FirstName As Range
-Dim Initial As Range
-Dim iRow As Long
-Dim myRange As Range
-Dim ReName As Range
-Dim myInt As Integer
-Dim StartHere As Worksheet
-Dim NewSheet As Worksheet
-Dim NewBook As Workbook
-
-'File saving variables
-
-    Dim ClassPeriods As New Collection
-    Dim TheBooks As New Collection
-    Dim ValidPeriod As String
-    Dim ValidPeriodNumber As Long
-    Dim counter As Long
-    Dim potato As String
-    Dim wkb As Workbook
-
-Dim dimwit As Variant
-
-
-
-'Some more variables
-
-    Dim ws1 As Worksheet
-    Dim ws2 As Worksheet
-    Dim ClassRoster As Worksheet
-    Dim SheetName As String
-    Dim CellName As String
-    Dim StupidProblem As String
-    
-    Dim NewCellName As String
-    Dim CellNumber As Boolean
-    Dim Taco As Boolean
-    Dim NumberofCharacters As Long
-    Dim NumberofCharacters2 As Long
-    
-    Dim RosterName As Range
-    Dim NewSpot As Range
-    Dim CellLocation As Range
-    Dim NewName As String
-    Dim eRow As Integer
-    Dim bRow As Integer
-    
-    Dim ValidClassSection As String
-    Dim CourseName As String
-    Dim DefinitiveNumber As Long
+'I would like to resolve this Screen Updating issue
 
 Application.ScreenUpdating = False
 
@@ -104,6 +41,69 @@ End If
     
 If Silly = True Then
 
+    'Subroutine creates a new workbook to format all relevant class rosters.
+    'The rest of the procedures will reference this class roster, but by the end of the program,
+    'this workbook will be deleted and not saved.
+    
+    Call FormatRoster
+    Call AddDefinitiveNumbers
+    
+    'UserForm to save rubric workbooks to desired folder (for macs)
+    
+    SelectPeriods.Show
+
+    If DidSelect = False Then
+    
+        Call CloseRoster
+        Exit Sub
+        
+    End If
+    
+    'File Saving Stage
+    
+    'Next sub is to reduce roster to relevant students
+    
+    Call ReduceStudents
+    
+    'Next sub retrieves file location and name from user
+    
+    Call TheFileName
+             
+    'Next sub checks to make sure all student names are compatible as Worksheet names
+    
+    Call NameCheck
+    
+    'Looks like I accidently deleted the remove period formula.
+    'I'll need to replace that.
+    
+    'Next sub copies and pastes rubrics into the new workbooks.
+    
+    Call CopyPasta
+    
+    Call CloseRoster
+    
+    Call SaveTheBooks
+        
+Else:
+
+    MsgBox ("You didn't paste your Weekly Attendance Roster, silly! Try again.")
+    
+End If
+    
+End Sub
+
+Private Sub FormatRoster()
+    
+    Dim OldBook As Workbook
+    Dim NewSheet As Worksheet
+    
+    Dim period As Range
+    Dim NewPeriod As Range
+    Dim myRange As Range
+    Dim FirstName As Range
+    
+    Dim myInt As Integer
+    
     For Each OldBook In Workbooks
     
         If OldBook.Name <> "Automated Rubric.xlsm" Then
@@ -140,23 +140,14 @@ If Silly = True Then
     Do Until IsEmpty(Cells(iRow, 2)) And IsEmpty(Cells(iRow, 1))
     
         Cells(iRow, 2) = "Yes"
-        
         Rows(iRow & ":" & iRow).Delete Shift:=xlUp
-        
         Set period = Cells(iRow, 1)
-        
         Set NewPeriod = Cells(iRow, 2)
-        
         period.Select
-        
         period.Cut Destination:=Range("B" & iRow)
-        
         Set NewPeriod = Cells(iRow, 2)
-        
         iRow = iRow + 2
-        
         Set FirstName = Cells(iRow, 2)
-        
         FirstName.Select
         
         Do Until IsEmpty(Cells(iRow, 2))
@@ -178,9 +169,7 @@ If Silly = True Then
     Loop
     
     Columns("A:A").Delete Shift:=xlToLeft
-    
     iRow = 2
-    
     Cells(iRow, 1).Select
     
     Do Until IsEmpty(Cells(iRow, 1))
@@ -221,112 +210,110 @@ If Silly = True Then
         
     Loop
     
-    
     iRow = 2
     Set ClassRoster = NewBook.Worksheets("Class Roster")
     
-    'Add definitive numbers so that later we can eliminate unnecessary classes
+End Sub
+
+Private Sub AddDefinitiveNumbers()
     
+    Dim DefinitiveNumber As Long
+    Dim ValidClassSection As String
+    Dim CourseName As String
+    
+    'Add list of definitive numbers to the left
     ClassRoster.Columns("A:A").Insert Shift:=xlTotheLeft
-    
     Cells(iRow, 2).Activate
     
-    MsgBox ("Now, you will get the chance to save your workbooks, organized by class period. Since these " & _
-                "rubrics use macros to work, you must save the workbooks as Macro-Enabled Workbooks." & vbNewLine & vbNewLine & "To do this, " & _
-                "use the drop down menu toward the bottom of the next prompt, and select the option that says Macro Enabled Workbook (.xlsm).")
-
     DefinitiveNumber = 1
 
-Do Until IsEmpty(ClassRoster.Cells(iRow, 2))
+    Do Until IsEmpty(ClassRoster.Cells(iRow, 2))
+        
+            If ClassRoster.Cells(iRow, 3) = "" Then
+                
+                iRow = iRow + 1
+            
+            Else:
+                
+                ClassRoster.Cells(iRow, 1) = DefinitiveNumber
+                ValidClassSection = ClassRoster.Cells(iRow, 2)
+                CourseName = ClassRoster.Cells(iRow, 3)
+                SelectPeriods.ListBox1.AddItem ("Period " + ValidClassSection + " - " + CourseName)
+                
+                DefinitiveNumber = DefinitiveNumber + 1
+                iRow = iRow + 1
+                
+            End If
+            
+    Loop
+
+End Sub
+
+Private Sub ReduceStudents()
     
-        If ClassRoster.Cells(iRow, 3) = "" Then
-            
-            iRow = iRow + 1
-        
-        Else:
-            
-            ClassRoster.Cells(iRow, 1) = DefinitiveNumber
-            ValidClassSection = ClassRoster.Cells(iRow, 2)
-            CourseName = ClassRoster.Cells(iRow, 3)
-            SelectPeriods.ListBox1.AddItem ("Period " + ValidClassSection + " - " + CourseName)
-            
-            DefinitiveNumber = DefinitiveNumber + 1
-            iRow = iRow + 1
-            
-        End If
-        
-Loop
-        
-'UserForm to save rubric workbooks to desired folder (for macs)
+    Dim ValidPeriod As String
     
-SelectPeriods.Show
-
-MsgBox (DidSelect)
-
-    If DidSelect = True Then
-
-        'File Saving
+    iRow = 2
+    
+    For counter = 0 To SelectPeriods.ListBox1.ListCount - 1
         
-        iRow = 2
-        
-        For counter = 0 To SelectPeriods.ListBox1.ListCount - 1
+        If SelectPeriods.ListBox1.Selected(counter) = True Then
+                
+                ValidPeriod = SelectPeriods.ListBox1.List(counter)
+                ClassPeriods.Add (ValidPeriod)
             
-            If SelectPeriods.ListBox1.Selected(counter) = True Then
+            Do Until ClassRoster.Cells(iRow, 1) <> counter + 1 And IsEmpty(ClassRoster.Cells(iRow, 1)) = False Or IsEmpty(ClassRoster.Cells(iRow, 2)) = True
+            
+                    iRow = iRow + 1
                     
-                    ValidPeriod = SelectPeriods.ListBox1.List(counter)
-                    ClassPeriods.Add (ValidPeriod)
+            Loop
                 
-                Do Until ClassRoster.Cells(iRow, 1) <> counter + 1 And IsEmpty(ClassRoster.Cells(iRow, 1)) = False Or IsEmpty(ClassRoster.Cells(iRow, 2)) = True
-                
-                        iRow = iRow + 1
+            'Condition following is to eliminate students no longer needed
+        
+        Else
+
+                Do Until ClassRoster.Cells(iRow, 1) > counter + 1 Or IsEmpty(ClassRoster.Cells(iRow, 2))
+                    
+                    ClassRoster.Rows(iRow & ":" & iRow).Delete xlUp
                         
                 Loop
                     
-                'Condition following is to eliminate students no longer needed
+        End If
             
-            Else
+    Next counter
+        
+    ClassRoster.Columns("A:A").Delete xlLeft
 
-                    Do Until ClassRoster.Cells(iRow, 1) > counter + 1 Or IsEmpty(ClassRoster.Cells(iRow, 2))
-                        
-                        ClassRoster.Rows(iRow & ":" & iRow).Delete xlUp
-                            
-                    Loop
-                        
-            End If
-                
-        Next counter
-            
-        ClassRoster.Columns("A:A").Delete xlLeft
+End Sub
+
+
+
+Private Sub NameCheck()
+
+    Dim RosterName As Range
+    Dim Burrito As Boolean
+    
+    iRow = 3
+    
+    Do Until IsEmpty(ClassRoster.Cells(iRow, 1))
+    
+        Set RosterName = ClassRoster.Cells(iRow, 1)
+        CellName = RosterName
         
-        For counter = 1 To ClassPeriods.Count
+        If IsGoodAscii(CellName) = False Then
         
-            potato = ClassPeriods(counter)
-            Workbooks.Add (1)
-            MacGetSaveAsFilenameExcel MyInitialFilename:=potato, FileExtension:="xlsm"
-            Set wkb = ActiveWorkbook
-            TheBooks.Add Item:=wkb
-            
-        Next counter
-            
-        'Begin Copy and Paste
-                 
-        'Looks like Ascii Check is broken to now...
-        'It's not broken, but it needs to be it's own separate loop
+            Burrito = False
         
-        iRow = 3
-        
-        Do Until IsEmpty(ClassRoster.Cells(iRow, 1))
-        
-            Set RosterName = ClassRoster.Cells(iRow, 1)
-            CellName = RosterName
+            Do While Burrito = False
             
-            If IsGoodAscii(CellName) = False Then
+            CellName = InputBox("It looks like the name " & CellName & "has an invalid character. How would you like to respell the name?")
             
-                Burrito = False
-            
-                Do While Burrito = False
-                
-                CellName = InputBox("It looks like the name " & CellName & "has an invalid character. How would you like to respell the name?")
+                If CellName = vbNullString Then
+                    
+                    CellName = ClassRoster.Cells(iRow, 1)
+                    Burrito = False
+                    
+                Else:
                 
                     If IsGoodAscii(CellName) = True Then
                         
@@ -337,114 +324,128 @@ MsgBox (DidSelect)
                         Burrito = False
                     
                     End If
-                
-                Loop
-                
-            Else:
-            
-                CellName = CellName
-                
-            End If
-            
-            iRow = iRow + 1
-            
-        Loop
-        
-        'Looks like I accidently deleted the remove period formula.
-        'I'll need to replace that.
-        
-                
-                'Ok, everything is good up to here.
-                'Next step is to fix the copy and paste function.
-                
-                'Need to simplify this code
-                'Probably going to use the collection preciously made
-                
-        Set ws1 = Workbooks("Automated Rubric.xlsm").Worksheets("Beta Automated Rubric")
-                
-        iRow = 3
-        
-        For Each wkb In TheBooks
-            
-            CellNumber = True
-            Do While CellNumber = True
-                            
-                            'Something is fucked up with this line of code following
-                                
-                        CellName = ClassRoster.Cells(iRow, 1)
-                        ws1.Copy Before:=wkb.Worksheets("Sheet1")
-                        Set ws2 = wkb.ActiveSheet
-                        ws2.Name = CellName
-                        Set ReName = ws2.Cells(2, 1)
-                        ReName = "Name: " & CellName
-                        ReName.Font.Size = 12
-                        
-                        If IsEmpty(ClassRoster.Cells(iRow + 1, 2)) And Not IsEmpty(ClassRoster.Cells(iRow + 1, 1)) Then
                     
-                            CellNumber = True
-                            iRow = iRow + 1
-                                
-                        Else:
-                            
-                            CellNumber = False
-                            iRow = iRow + 2
-                        
-                        End If
-                        
+                End If
+            
             Loop
-                
-        Next wkb
-                
-                NewBook.Saved = True
-                Application.ScreenUpdating = True
-                
-                NewBook.Close
-                    
-                    For Each DifBook In Workbooks
-                
-                        For Each EndAll In DifBook.Worksheets
-                        
-                                If EndAll.Name = "Start Here" Or EndAll.Name = "Beta Automated Rubric" Then
-                                    Exit For
-                                    
-                                Else:
-                                
-                                If EndAll.Name = "Sheet1" Then
-                                
-                                    Application.DisplayAlerts = False
-                                    EndAll.Delete
-                                    Application.DisplayAlerts = True
-                                End If
-                                
-                                End If
-                                
-                                
-                    Next EndAll
-                    
-                Next DifBook
-        
-            For Each DifBook In Workbooks
             
-                DifBook.Save
-                
-            Next DifBook
-        
         Else:
+        
+            CellName = CellName
             
-                NewBook.Saved = True
-                Application.ScreenUpdating = True
-                NewBook.Close
-                
         End If
         
-Else:
-
-    MsgBox ("You didn't paste your Weekly Attendance Roster, silly! Try again.")
-    
-End If
+        iRow = iRow + 1
+        
+    Loop
     
 End Sub
 
+Private Sub TheFileName()
+        
+        Dim potato As String
+        Dim wkb1 As Workbook
+        
+        For counter = 1 To ClassPeriods.Count
+    
+            potato = ClassPeriods(counter)
+            Workbooks.Add (1)
+            MacGetSaveAsFilenameExcel MyInitialFilename:=potato, FileExtension:="xlsm"
+            Set wkb1 = ActiveWorkbook
+            TheBooks.Add Item:=wkb1
+        
+        Next counter
+    
+End Sub
+
+Private Sub CopyPasta()
+
+    Dim ReName As Range
+    Dim CellNumber As Boolean
+    
+    Dim wkb As Workbook
+    
+    Dim ws1 As Worksheet
+    Dim ws2 As Worksheet
+    
+    Set ws1 = Workbooks("Automated Rubric.xlsm").Worksheets("Beta Automated Rubric")
+            
+    iRow = 3
+    
+    For Each wkb In TheBooks
+        
+        CellNumber = True
+        Do While CellNumber = True
+                            
+                    CellName = ClassRoster.Cells(iRow, 1)
+                    ws1.Copy Before:=wkb.Worksheets("Sheet1")
+                    Set ws2 = wkb.ActiveSheet
+                    ws2.Name = CellName
+                    Set ReName = ws2.Cells(2, 1)
+                    ReName = "Name: " & CellName
+                    ReName.Font.Size = 12
+                    
+                    If IsEmpty(ClassRoster.Cells(iRow + 1, 2)) And Not IsEmpty(ClassRoster.Cells(iRow + 1, 1)) Then
+                
+                        CellNumber = True
+                        iRow = iRow + 1
+                            
+                    Else:
+                        
+                        CellNumber = False
+                        iRow = iRow + 2
+                    
+                    End If
+                    
+        Loop
+            
+    Next wkb
+    
+End Sub
+
+Private Sub SaveTheBooks()
+
+Dim DifBook As Workbook
+Dim EndAll As Worksheet
+
+    For Each DifBook In Workbooks
+    
+        For Each EndAll In DifBook.Worksheets
+        
+            If EndAll.Name = "Start Here" Or EndAll.Name = "Beta Automated Rubric" Then
+            
+                Exit For
+                
+            Else:
+            
+                If EndAll.Name = "Sheet1" Then
+            
+                    Application.DisplayAlerts = False
+                    EndAll.Delete
+                    Application.DisplayAlerts = True
+                    
+                End If
+            
+            End If
+                    
+        Next EndAll
+        
+    Next DifBook
+
+    For Each DifBook In Workbooks
+    
+        DifBook.Save
+        
+    Next DifBook
+
+End Sub
+Private Sub CloseRoster()
+
+    NewBook.Saved = True
+    Application.ScreenUpdating = True
+    NewBook.Close
+
+End Sub
 
 Function MacGetSaveAsFilenameExcel(MyInitialFilename As String, FileExtension As String)
 'Ron de Bruin, 03-April-2015
@@ -535,3 +536,5 @@ Wend
 
 IsGoodAscii = True
 End Function
+
+
