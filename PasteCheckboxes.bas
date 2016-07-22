@@ -1,0 +1,115 @@
+Attribute VB_Name = "Module1"
+Sub PasteNewSheet()
+Attribute PasteNewSheet.VB_ProcData.VB_Invoke_Func = " \n14"
+'
+' PasteNewSheet Macro
+'
+
+'
+    Dim chk As CheckBox
+    Dim Ws As Worksheet
+    
+    ActiveSheet.CheckBoxes.Add(0, 42, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 69, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 96, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 123, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 150, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 177, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 42, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 69, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 96, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 123, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 150, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 177, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 42, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 69, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 223, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 250, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 277, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 304, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 340, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 223, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 250, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 277, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 304, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 340, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 223, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 250, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 277, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 304, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 223, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 250, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 277, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 304, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 386, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 413, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 440, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 386, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 413, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 440, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 386, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 413, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 440, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 386, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 413, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 440, 31, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 503, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 530, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 557, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 584, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 503, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 530, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 557, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 584, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 611, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 638, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 665, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 503, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 530, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 557, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 584, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 611, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 638, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 503, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 530, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 557, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 584, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 611, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 736, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 763, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 790, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 822, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 736, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 763, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 790, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 822, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 736, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 763, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 790, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 822, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 849, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 736, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 763, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 790, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 822, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 890, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 920, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 947, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(0, 974, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 890, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 920, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 947, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 974, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 890, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 920, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 947, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(310, 974, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 890, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 920, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 947, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(465, 974, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 692, 24, 27).Select
+    ActiveSheet.CheckBoxes.Add(155, 665, 24, 27).Select
+    Sheets("Beta Automated Rubric").Copy After:=Sheets(1)
+    ActiveCell.Select
+End Sub
