@@ -1,18 +1,16 @@
 Attribute VB_Name = "CreateRubricsCodeWindows"
-Public DidSelect As Boolean
+Dim iRow As Long
+Dim counter As Long
 
-Public iRow As Long
-Public counter As Long
+Dim CellName As String
 
-Public CellName As String
+Dim NewBook As Workbook
 
-Public NewBook As Workbook
+Dim ClassRoster As Worksheet
+Dim StartHere As Worksheet
 
-Public ClassRoster As Worksheet
-Public StartHere As Worksheet
-
-Public ClassPeriods As New Collection
-Public TheBooks As New Collection
+Dim ClassPeriods As New Collection
+Dim TheBooks As New Collection
 
 Sub CreateRubrics()
 
@@ -26,7 +24,6 @@ Set StartHere = Workbooks("Automated Rubric.xlsm").Worksheets("Start Here")
 StartHere.Activate
 
 Silly = True
-DidSelect = True
 
 If StartHere.Range("A2") = "Step 1: Select this cell (A2)." Then
     
@@ -50,13 +47,15 @@ If Silly = True Then
     'UserForm to save rubric workbooks to desired folder (for macs)
     
     SelectPeriods.Show
-
-    If DidSelect = False Then
+    
+    If SelectPeriods.DidSelect = False Then
     
         Call CloseRoster
         Exit Sub
         
     End If
+    
+    Unload SelectPeriods
     
     'File Saving Stage
     
